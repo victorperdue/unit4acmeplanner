@@ -29,7 +29,7 @@ await client.query(SQL);
 };
 
 const createCustomer = async (name) => {
-    const SQL = /*SQL*/ `INSERT INTO users(id, name) VALUES ($1, $2) RETURNING *`
+    const SQL = /*SQL*/ `INSERT INTO customers(id, name) VALUES ($1, $2) RETURNING *`
     const response = await client.query(SQL, [uuid.v4(), name])
 console.log('response-customers', response);
 return response.rows[0];
@@ -37,13 +37,13 @@ return response.rows[0];
 ;
 
 const createResturant = async (name) => {
-    const SQL = /*SQL*/ `INSERT INTO places(id, name) VALUES ($1, $2) RETURNING *`
+    const SQL = /*SQL*/ `INSERT INTO resturants(id, name) VALUES ($1, $2) RETURNING *`
     const response = await client.query(SQL, [uuid.v4(), name])
 console.log('response -resturants', response.rows[0])
 return response.rows[0];
 }
 
-const createReservation = async ({user_id, place_id}) => {
+const createReservation = async ({customer_id, resturant_id}) => {
     const SQL= /*SQL*/ `
     INSERT INTO vacations(id, customer_id, resturant_id) VALUES($1, $2, $3) RETURNING *
     `
@@ -58,13 +58,13 @@ const seed = async () => {
         createResturant('Pizza Hut'),
         createResturant('Food Place')
     ])
-    const users = await fetchCustomers()
-    console.log('Users are ', await fetchCustomers());
-    const places = await fetchResturants()
-    console.log('Places are ', await fetchResturants());
+    const customers = await fetchCustomers()
+    console.log('Customers are ', await fetchCustomers());
+    const resturants = await fetchResturants()
+    console.log('Resturants are ', await fetchResturants());
     await Promise.all([
         createReservation({
-            customer_id: customer [0].id,
+            customer_id: customers[0].id,
             resturant_id: resturants[1].id
         }),
         createReservation({
